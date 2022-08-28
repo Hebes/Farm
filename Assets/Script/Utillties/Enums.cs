@@ -44,3 +44,16 @@ public enum EItemType
     /// </summary>
     ReapableSceney,
 }
+
+
+[System.Serializable]
+/// <summary>这个是为Inventory使用的   struct 可以初始化默认值</summary>
+public struct InventoryItem
+{
+    public int itemID;
+
+    /// <summary>
+    /// 物品数量
+    /// </summary>
+    public int itemAmount;
+}
