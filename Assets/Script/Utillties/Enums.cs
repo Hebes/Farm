@@ -45,6 +45,25 @@ public enum EItemType
     ReapableSceney,
 }
 
+/// <summary>
+/// 格子的类型
+/// </summary>
+public enum ESlotType
+{
+    Bag,
+    Box,
+    Shop,
+}
+
+/// <summary>
+/// 物品的位置
+/// </summary>
+public enum EInventoryLocation
+{
+    Player,
+    Box,
+}
+
 
 [System.Serializable]
 /// <summary>这个是为Inventory使用的   struct 可以初始化默认值</summary>

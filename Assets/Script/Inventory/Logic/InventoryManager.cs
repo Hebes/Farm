@@ -11,20 +11,27 @@ namespace MFarm.Inventory
         [Header("背包数据")]
         public InventoryBag_SO PlayerBag;
 
+        private void Start()
+        {
+            //更新物品UI 呼叫事件中心,执行委托的代码  这个用于游戏一开始 背包已经有物品的情况  记录读取
+            EventHandler.CallUpdateInventoryUI(EInventoryLocation.Player, PlayerBag.itemList);
+        }
+
         /// <summary>获取一个物品信息</summary>
         public ItemDatails GetItemDatails(int ID) => ItemDataList_SO.ItemDatailsList.Find(i => i.itemID == ID);
-
         /// <summary>添加物品到背包</summary>
         public void AddItem(Item item, bool toDestory)
         {
             //背包是否有该物品
             int index = GetItemIndexBag(item.itemID);
             AddItemAtItem(item.itemID, index, 1);
-            Debug.Log(item.itemID);
+            Debug.Log(item.itemID+"  "+item.itemDatails.itemName);
             if (toDestory)
                 Destroy(item.gameObject);
-        }
 
+            //更新物品UI 呼叫事件中心,执行委托的代码
+            EventHandler.CallUpdateInventoryUI(EInventoryLocation.Player, PlayerBag.itemList);
+        }
         /// <summary>通过物品ID找到背包已有物品位置</summary>
         private int GetItemIndexBag(int ID)
         {
@@ -36,7 +43,6 @@ namespace MFarm.Inventory
             }
             return -1;
         }
-
         /// <summary>检查背包空位</summary>
         private bool CheckBagCapacity()
         {
