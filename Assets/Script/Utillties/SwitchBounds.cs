@@ -5,10 +5,12 @@ using UnityEngine;
 
 public class SwitchBounds : MonoBehaviour
 {
-    private void Start()
-    {
-        SwichConfinerShape();
-    }
+    private void OnEnable() => EventHandler.AfterSceneLoadedEvent += SwichConfinerShape;
+    private void OnDisable() => EventHandler.AfterSceneLoadedEvent -= SwichConfinerShape;
+
+    /// <summary>
+    /// 切换场景的时候找到 限定范围的组件
+    /// </summary>
     private void SwichConfinerShape()
     {
         PolygonCollider2D ConfinerShape = GameObject.FindGameObjectWithTag("BoundsConfiner").GetComponent<PolygonCollider2D>();

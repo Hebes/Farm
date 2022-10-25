@@ -5,6 +5,10 @@ TagManager:
   serializedVersion: 2
   tags:
   - BoundsConfiner
+  - ItemParent
+  - CursorCanvas
+  - Dig
+  - Water
   layers:
   - Default
   - TransparentFX

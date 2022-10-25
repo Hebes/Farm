@@ -7,10 +7,11 @@ namespace MFarm.Inventory
 {
     public class InventoryUI : MonoBehaviour
     {
-        /// <summary>
-        /// 拖拽的物体
-        /// </summary>
-        [Header("拖拽中的物品")]
+        /// <summary>信息提示框</summary>
+        public ItemToolTip itemToolTip;
+
+        /// <summary>拖拽的物体</summary>
+        [Header("拖拽中的物品图片")]
         public Image dragItem;
         [Header("玩家背包")]
         [SerializeField]
@@ -24,11 +25,20 @@ namespace MFarm.Inventory
         private SlotUI[] playerSlot;
 
         /// <summary>添加事件</summary>
-        private void OnEnable() => EventHandler.UpdateInvenoryUI += OnUpdateInventoryUI;
+        private void OnEnable()
+        {
+            EventHandler.UpdateInvenoryUI += OnUpdateInventoryUI;
+            EventHandler.BeforeSceneUnloadEvent += OnBeforeSceneUnloadEvent;
+        }
         /// <summary>移除事件</summary>
-        private void OnDisable() => EventHandler.UpdateInvenoryUI -= OnUpdateInventoryUI;
+        private void OnDisable()
+        {
+            EventHandler.UpdateInvenoryUI -= OnUpdateInventoryUI;
+            EventHandler.BeforeSceneUnloadEvent -= OnBeforeSceneUnloadEvent;
+        }
         private void Awake()
         {
+            itemToolTip.gameObject.SetActive(false);//默认是关闭的
             bagUI.SetActive(false);//确保游戏开始的时候肯定是关闭状态
             bagButton.onClick.AddListener(OpenBagUI);
         }
@@ -45,6 +55,8 @@ namespace MFarm.Inventory
                 OpenBagUI();
         }
 
+        /// <summary>取消物品选择高亮</summary>
+        private void OnBeforeSceneUnloadEvent() => UpdateSlotHightLight(-1);
         /// <summary>打开背包</summary>
         public void OpenBagUI()
         {
@@ -67,7 +79,6 @@ namespace MFarm.Inventory
                 }
             }
         }
-
         /// <summary>监听的事件的具体执行方法</summary>
         private void OnUpdateInventoryUI(EInventoryLocation location, List<InventoryItem> list)
         {
@@ -78,7 +89,7 @@ namespace MFarm.Inventory
                     {
                         if (list[i].itemAmount > 0)//有物品
                         {
-                            ItemDatails item = InventoryManager.Instance.GetItemDatails(list[i].itemID);
+                            ItemDetails item = InventoryManager.Instance.GetItemDatails(list[i].itemID);
                             playerSlot[i].UpdateSlot(item, list[i].itemAmount);
                         }
                         else

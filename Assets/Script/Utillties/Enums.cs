@@ -3,7 +3,7 @@ public enum EItemType
     /// <summary>
     /// 种子
     /// </summary>
-    Seed ,
+    Seed,
     /// <summary>
     /// 商品
     /// </summary>
@@ -64,15 +64,49 @@ public enum EInventoryLocation
     Box,
 }
 
-
-[System.Serializable]
-/// <summary>这个是为Inventory使用的   struct 可以初始化默认值</summary>
-public struct InventoryItem
+/// <summary>
+/// 物体类型类型
+/// </summary>
+public enum EPartType
 {
-    public int itemID;
-
+    None,
     /// <summary>
-    /// 物品数量
+    /// 举东西的状态
     /// </summary>
-    public int itemAmount;
+    Carry,
+    /// <summary>
+    /// 锄头
+    /// </summary>
+    Hoe,
+    Break,
+}
+
+/// <summary>
+/// 身体部位
+/// </summary>
+public enum EPartName
+{
+    Body,
+    Hair,
+    Arm,
+    Tool,
+}
+
+/// <summary>
+/// 春夏秋冬
+/// </summary>
+public enum ESeason
+{
+    春天,
+    夏天,
+    秋天,
+    冬天
+}
+
+/// <summary>
+/// 网格的类型
+/// </summary>
+public enum EGridType
+{
+    Diggable, DropItem, PlaceFurniture, NPCObstacle,
 }

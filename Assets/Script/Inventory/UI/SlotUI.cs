@@ -5,7 +5,7 @@ using UnityEngine.EventSystems;
 
 namespace MFarm.Inventory
 {
-    public class SlotUI : MonoBehaviour,IPointerClickHandler,IBeginDragHandler,IDragHandler,IEndDragHandler
+    public class SlotUI : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, IDragHandler, IEndDragHandler
     {
         [Header("获取组件")]
         [SerializeField]
@@ -31,7 +31,7 @@ namespace MFarm.Inventory
         /// <summary>
         /// 物品信息
         /// </summary>
-        public ItemDatails itemDatails;
+        public ItemDetails itemDatails;
 
         /// <summary>
         /// 物品数量
@@ -46,7 +46,7 @@ namespace MFarm.Inventory
         private void Start()
         {
             isSelected = false;
-            if (itemDatails.itemID == 0)
+            if (itemDatails == null)
                 UpdateEmptySlot();
         }
 
@@ -55,7 +55,7 @@ namespace MFarm.Inventory
         /// </summary>
         /// <param name="item"></param>
         /// <param name="Amount"></param>
-        public void UpdateSlot(ItemDatails item, int Amount)
+        public void UpdateSlot(ItemDetails item, int Amount)
         {
             itemDatails = item;
             slotImage.sprite = item.itemIcon;
@@ -69,7 +69,13 @@ namespace MFarm.Inventory
         public void UpdateEmptySlot()
         {
             if (isSelected)
+            {
                 isSelected = false;
+                //清空所有高亮
+                inventoryUI.UpdateSlotHightLight(-1);
+                EventHandler.CallItemSelectEvent(itemDatails, isSelected);
+            }
+            itemDatails = null;
             slotImage.enabled = false;
             amountText.text = string.Empty;
             button.interactable = false;//该组是否可交互（组下的元素是否处于启用状态）。
@@ -80,15 +86,21 @@ namespace MFarm.Inventory
         /// <summary>点按接口的实现</summary>
         public void OnPointerClick(PointerEventData eventData)
         {
-            if (itemAmount == 0) return;
+            if (itemDatails == null) return;
             isSelected = !isSelected;
             slotHightLight.gameObject.SetActive(isSelected);
             inventoryUI.UpdateSlotHightLight(slotIndex);
+            //判断是否是在商店中点击(商店不执行代码)
+            if (eSlotType == ESlotType.Bag)
+            {
+                //通知物品被选中的状态和信息
+                EventHandler.CallItemSelectEvent(itemDatails, isSelected);
+            }
         }
         /// <summary>开始拖拽</summary>
         public void OnBeginDrag(PointerEventData eventData)
         {
-            if (itemAmount!=0)
+            if (itemAmount != 0)
             {
                 inventoryUI.dragItem.enabled = true;//启用拖拽的物体
                 inventoryUI.dragItem.sprite = slotImage.sprite;//设置拖拽物体的图片
@@ -108,11 +120,32 @@ namespace MFarm.Inventory
         public void OnEndDrag(PointerEventData eventData)
         {
             inventoryUI.dragItem.enabled = false;
-            if (eventData.pointerCurrentRaycast.gameObject==null)
+            if (eventData.pointerCurrentRaycast.gameObject != null)
             {
+                //物品交换
+                if (eventData.pointerCurrentRaycast.gameObject.GetComponent<SlotUI>() == null) return;
+                var targetSlot = eventData.pointerCurrentRaycast.gameObject.GetComponent<SlotUI>();//如果是存在SlotUI组件的话
+                int targetIndex = targetSlot.slotIndex;
+
+                //在player自身背包范围内的交换
+                if (eSlotType == ESlotType.Bag && targetSlot.eSlotType == ESlotType.Bag)//类型都相同的话
+                    InventoryManager.Instance.SwapItem(slotIndex, targetIndex);
+                Debug.Log(eventData.pointerCurrentRaycast.gameObject);//打印鼠标指针的射线检测到的物体
                 slotImage.color = new Color(slotImage.color.r, slotImage.color.g, slotImage.color.b, 1);
             }
-            Debug.Log(eventData.pointerCurrentRaycast.gameObject);//打印鼠标指针的射线检测到的物体
+            //else //测试仍在地上  //TUDO  31集
+            //{
+            //    if (itemDatails.canDropped)
+            //    {
+            //        //屏幕坐标转成世界坐标 鼠标对应的世界坐标
+            //        var pos = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, -Camera.main.transform.position.z));
+            //        EventHandler.CallInstantiateItemScen(itemDatails.itemID, pos);
+            //        UpdateEmptySlot();
+            //    }
+            //}
+
+            //清空所有高亮
+            inventoryUI.UpdateSlotHightLight(-1);
         }
         #endregion
     }

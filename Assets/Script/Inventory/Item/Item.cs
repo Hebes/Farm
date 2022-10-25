@@ -7,7 +7,7 @@ namespace MFarm.Inventory
     public class Item : MonoBehaviour
     {
         public int itemID;
-        public ItemDatails itemDatails;
+        public ItemDetails itemDatails;
 
         private SpriteRenderer spriteRenderer;
         private BoxCollider2D coll;
@@ -25,7 +25,7 @@ namespace MFarm.Inventory
         }
 
         /// <summary>根据ID生成物品</summary>
-        private void Init(int ID)
+        public void Init(int ID)
         {
             itemID = ID;
             itemDatails = InventoryManager.Instance.GetItemDatails(ID);

@@ -9,7 +9,7 @@ using UnityEngine.UIElements;
 public class ItemWindow : EditorWindow
 {
     private ItemDataList_SO dataBase;
-    private List<ItemDatails> itemList = new List<ItemDatails>();
+    private List<ItemDetails> itemList = new List<ItemDetails>();
     private VisualTreeAsset ItemRowTempLate;
 
     // 获得VisualElement
@@ -17,7 +17,7 @@ public class ItemWindow : EditorWindow
     //编辑器的右边部分
     private ScrollView itemDetailsSection;
     //被激活的物体
-    private ItemDatails activeItem;
+    private ItemDetails activeItem;
     //默认图片
     private Sprite defaultIcon;
     private VisualElement iconPreview;
@@ -76,7 +76,7 @@ public class ItemWindow : EditorWindow
     /// <summary>生成按钮</summary>
     private void OnAddItemClicked()
     {
-        ItemDatails newItem = new ItemDatails();
+        ItemDetails newItem = new ItemDetails();
         newItem.itemName = "NEW ITEM";
         newItem.itemID = 1000 + itemList.Count;
         newItem.itemIcon = defaultIcon;
@@ -126,7 +126,7 @@ public class ItemWindow : EditorWindow
     }
     private void OnListSeLectionChange(IEnumerable<object> sleectItem)
     {
-        activeItem = (ItemDatails)sleectItem.First();
+        activeItem = (ItemDetails)sleectItem.First();
         GetItemDetails();
         // 右侧信息面板不可见
         itemDetailsSection.visible = true;
